@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 var cors = require('cors');
 
 // Configuration
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/students");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/family");
 
 app.use(bodyParser.urlencoded({'extended': 'true'}));
 app.use(bodyParser.json());
@@ -22,54 +22,74 @@ app.use(function (req, res, next) {
     next();
 });
 
-var Blog = mongoose.model('Blog', {
+var Event = mongoose.model('Event', {
     title: String,
-    shortDescr: String,
-    href: String,
+    date: String,
+    timeSt: String,
+    timeEnd: String,
+    loc: String,
+    menuItem: String,
+    menuAsgn: String,
+    decoration: String,
+    decorationAsgn: String,
+    guestFirstName: String,
+    guestLastName: String,
+    supplyItem: String,
+    supplyAsgn: String,
 });
 
-// Get all blogs
-app.get('/api/blogs', function (req, res) {
+// Get all Events
+app.get('/api/events', function (req, res) {
 
-    console.log("Listing blogs...");
+    console.log("Listing Events...");
 
-    //use mongoose to get all blogs in the database
-    Blog.find(function (err, blogs) {
+    //use mongoose to get all Events in the database
+    Event.find(function (err, events) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err) {
             res.send(err);
         }
-        res.json(blogs); // return all blogs in JSON format
+        res.json(events); // return all Events in JSON format
     });
 });
 
-// Create a blog
-app.post('/api/blogs', function (req, res) {
+// Create a Event
+app.post('/api/events', function (req, res) {
 
-    console.log("Creating blog...");
+    console.log("Creating Event...");
 
-    Blog.create({
+    Event.create({
         title: req.body.title,
-        shortDescr: req.body.shortDescr,
-        href: req.body.href,
+        date: req.body.date,
+        timeSt: req.body.timeSt,
+        timeEnd: req.body.timeEnd,
+        loc: req.body.loc,
+        menuItem: req.body.menuItem,
+        menuAsgn: req.body.menuAsgn,
+        decoration: req.body.decoration,
+        decorationAsgn: req.body.decorationAsgn,
+        guestFirstName: req.body.guestFirstName,
+        guestLastName: req.body.guestLastName,
+        supplyItem: req.body.supplyItem,
+        supplyAsgn: req.body.supplyAsgn,
         done: false
-    }, function (err, blog) {
+    }, function (err, event) {
         if (err) {
             res.send(err);
         }
 
-        // create and return blogs
-        Blog.find(function (err, blogs) {
+        // create and return Events
+        Event.find(function (err, events) {
             if (err)
                 res.send(err);
-            res.json(blogs);
+            res.json(events);
         });
     });
 
 });
 
 
-// Start app and listen on port 8082
-app.listen(process.env.PORT || 8082);
-console.log("Blogs server listening on port  - ", (process.env.PORT || 8082));
+// Start app and listen on port 8081
+app.listen(process.env.PORT || 8081);
+console.log("Events server listening on port  - ", (process.env.PORT || 8081));
