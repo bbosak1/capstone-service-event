@@ -45,13 +45,36 @@ app.get('/api/events', function (req, res) {
 
     //use mongoose to get all Events in the database
     Event.find(function (err, events) {
-
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err) {
             res.send(err);
         }
         res.json(events); // return all Events in JSON format
     });
+});
+
+// Update an event
+app.put('/api/events/:id', function (req, res) {
+  const event = {
+    title: req.body.title,
+    date: req.body.date,
+    loc: req.body.loc,
+    menuItem: req.body.menuItem,
+    menuAsgn: req.body.menuAsgn,
+    decoration: req.body.decoration,
+    decorationAsgn: req.body.decorationAsgn,
+    guestFirstName: req.body.guestFirstName,
+    guestLastName: req.body.guestLastName,
+    supplyItem: req.body.supplyItem,
+    supplyAsgn: req.body.supplyAsgn,
+  };
+  console.log("Updating item - ", req.params.id);
+  Event.update({_id: req.params.id}, event, function (err, raw) {
+      if (err) {
+          res.send(err);
+      }
+      res.send(raw);
+  });
 });
 
 // Create a Event
