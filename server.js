@@ -38,6 +38,75 @@ var Event = mongoose.model('Event', {
     supplyAsgn: String,
 });
 
+var Todo = mongoose.model('Todo', {
+    descr: String,
+    assignee: String,
+});
+
+// Todos
+
+// Get all todos
+app.get('/api/todos', function (req, res) {
+
+    console.log("Listing Todos...");
+
+    //use mongoose to get all Todos in the database
+    Todo.find(function (err, todos) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err) {
+            res.send(err);
+        }
+        res.json(todos); // return all Todos in JSON format
+    });
+});
+
+// Create a todo item
+app.post('/api/todos', function (req, res) {
+
+    console.log("Creating Todo...");
+
+    Todo.create({
+        descr: req.body.descr,
+        assignee: req.body.assignee,
+    }, function (err, todo) {
+        if (err) {
+            res.send(err);
+        }
+
+        // create and return todos
+        Todo.find(function (err, todos) {
+            if (err)
+                res.send(err);
+            res.json(todos);
+        });
+    });
+
+});
+
+// Delete a todo
+app.delete('/api/todos/:id', function (req, res) {
+  Todo.remove({
+    _id: req.params.id
+  }, function (err, todo) {
+    if (err) {
+      console.error("Error deleting todo ", err);
+    }
+    else {
+      Todo.find(function (err, todos) {
+        if (err) {
+          res.send(err);
+        }
+        else {
+          res.json(todos);
+        }
+      });
+    }
+  });
+});
+
+// Events
+
 // Get all Events
 app.get('/api/events', function (req, res) {
 
@@ -79,39 +148,55 @@ app.put('/api/events/:id', function (req, res) {
 
 // Create a Event
 app.post('/api/events', function (req, res) {
+  console.log("Creating Event...");
+  Event.create({
+      title: req.body.title,
+      date: req.body.date,
+      timeSt: req.body.timeSt,
+      timeEnd: req.body.timeEnd,
+      loc: req.body.loc,
+      menuItem: req.body.menuItem,
+      menuAsgn: req.body.menuAsgn,
+      decoration: req.body.decoration,
+      decorationAsgn: req.body.decorationAsgn,
+      guestFirstName: req.body.guestFirstName,
+      guestLastName: req.body.guestLastName,
+      supplyItem: req.body.supplyItem,
+      supplyAsgn: req.body.supplyAsgn,
+      done: false
+  }, function (err, event) {
+      if (err) {
+          res.send(err);
+      }
 
-    console.log("Creating Event...");
-
-    Event.create({
-        title: req.body.title,
-        date: req.body.date,
-        timeSt: req.body.timeSt,
-        timeEnd: req.body.timeEnd,
-        loc: req.body.loc,
-        menuItem: req.body.menuItem,
-        menuAsgn: req.body.menuAsgn,
-        decoration: req.body.decoration,
-        decorationAsgn: req.body.decorationAsgn,
-        guestFirstName: req.body.guestFirstName,
-        guestLastName: req.body.guestLastName,
-        supplyItem: req.body.supplyItem,
-        supplyAsgn: req.body.supplyAsgn,
-        done: false
-    }, function (err, event) {
-        if (err) {
-            res.send(err);
-        }
-
-        // create and return Events
-        Event.find(function (err, events) {
-            if (err)
-                res.send(err);
-            res.json(events);
-        });
-    });
-
+      // create and return Events
+      Event.find(function (err, events) {
+          if (err)
+              res.send(err);
+          res.json(events);
+      });
+  });
 });
 
+app.delete('/api/events/:id', function (req, res) {
+  Event.remove({
+    _id: req.params.id
+  }, function (err, todo) {
+    if (err) {
+      console.error("Error deleting event ", err);
+    }
+    else {
+      Event.find(function (err, todos) {
+        if (err) {
+          res.send(err);
+        }
+        else {
+          res.json(todos);
+        }
+      });
+    }
+  });
+});
 
 // Start app and listen on port 8081
 app.listen(process.env.PORT || 8081);
